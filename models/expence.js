@@ -8,8 +8,17 @@ const Expence=sequelize.define("expence-details",{
         autoIncrement:true,
         primaryKey:true
     },
-    details:{
-        type:Sequelize.JSON,
+    name:{
+        type:Sequelize.STRING,
+        allowNull:false
+    },
+    email:{
+        type:Sequelize.STRING,
+        allowNull:false,
+        unique:true
+    },
+    password:{
+        type:Sequelize.STRING,
         allowNull:false
     }
 })
