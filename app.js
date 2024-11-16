@@ -2,6 +2,7 @@ const express =require("express")
 const app=express()
 const bodyparser=require("body-parser")
 const cors=require("cors")
+const bcrypt=require("bcrypt")
 
 const Routes=require("./routes/expence")
 const sequelize=require("./utils/database")
