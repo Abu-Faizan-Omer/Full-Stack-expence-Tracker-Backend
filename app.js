@@ -4,13 +4,15 @@ const bodyparser=require("body-parser")
 const cors=require("cors")
 const bcrypt=require("bcrypt")
 
-const Routes=require("./routes/expence")
 const sequelize=require("./utils/database")
+const Routes=require("./routes/user")
+const routes=require("./routes/expence")
 
 app.use(cors());
 app.use(bodyparser.urlencoded({extended:false}))
 app.use(bodyparser.json())
 app.use("/users",Routes)
+app.use("/expence",routes)
 
 sequelize.sync()
 .then((result)=>{

@@ -1,24 +1,26 @@
 const sequelize=require("../utils/database")
 const Sequelize=require("sequelize")
 
-const Expences=sequelize.define("expence_tracker",{
+const User=sequelize.define("user",{
     id:{
         type:Sequelize.INTEGER,
         allowNull:false,
         autoIncrement:true,
         primaryKey:true
     },
-    expence:{
+    name:{
         type:Sequelize.STRING,
         allowNull:false
     },
-    description:{
+    email:{
         type:Sequelize.STRING,
-        allowNull:false
+        allowNull:false,
+        unique:true
     },
-    categories:{
+    password:{
         type:Sequelize.STRING,
         allowNull:false
     }
 })
-module.exports=Expences
+
+module.exports=User
