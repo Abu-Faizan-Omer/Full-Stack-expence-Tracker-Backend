@@ -1,5 +1,6 @@
 const User=require("../models/user")
 const bcrypt=require("bcrypt")
+const jwt=require("jsonwebtoken")
 //to check every input is filled or not
 function isStringValid(string){
     if(string==undefined || string.length===0)
@@ -29,6 +30,10 @@ exports.signup=async(req,res,next)=>{
     }   
 }
 
+ function generateAccessToken(id,name){
+    return jwt.sign({userId:id,name:name},'secretkey')
+ }
+
 
 exports.login = async (req, res, next) => {
     try {
@@ -39,26 +44,24 @@ exports.login = async (req, res, next) => {
         }
 
         // Check if the user exists in the database
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findAll({ where: { email } });
 
-        if (!user) {
-            // User not found 
-            return res.status(404).json({ message: "User not found " });         
+        if (user.length > 0) {
+            bcrypt.compare(password,user[0].password,(err,result)=>{
+                if(err){
+                    throw new Error('Something went wrong')
+                }  
+                if (result===true) {
+                    // Password matches
+                    return res.status(200).json({ message: "User login successful",token:generateAccessToken(user[0].id,user[0].name)});
+                } else {
+                    // Password does not match
+                    return res.status(401).json({ message: "Password not match" });
+                }  
+            })     
+        }else{
+            res.status(404).json({message:"User not exist"})
         }
-        bcrypt.compare(password,user.password,(err,result)=>{
-            //if err happen
-            if(err){
-                res.status(500).json({message:"Something went wrong"})
-            }
-            
-        if (result===true) {
-            // Password matches
-            return res.status(200).json({ message: "User login successful" });
-        } else {
-            // Password does not match
-            return res.status(401).json({ message: "Password not match" });
-        }
-    })
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: "Internal server error" });
