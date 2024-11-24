@@ -30,10 +30,11 @@ exports.signup=async(req,res,next)=>{
     }   
 }
 
- function generateAccessToken(id,name){
-    return jwt.sign({userId:id,name:name},'secretkey')
+ function generateAccessToken(id,name,ispremiumuser){
+    return jwt.sign({userId:id,name:name,ispremiumuser},'secretkey')
  }
-
+// Export generateAccessToken
+ exports.generateAccessToken = generateAccessToken;
 
 exports.login = async (req, res, next) => {
     try {
@@ -53,7 +54,7 @@ exports.login = async (req, res, next) => {
                 }  
                 if (result===true) {
                     // Password matches
-                    return res.status(200).json({ message: "User login successful",token:generateAccessToken(user[0].id,user[0].name)});
+                    return res.status(200).json({ message: "User login successful",token:generateAccessToken(user[0].id,user[0].name,user[0].ispremiumuser)});
                 } else {
                     // Password does not match
                     return res.status(401).json({ message: "Password not match" });

@@ -1,7 +1,7 @@
 const Razorpay = require('razorpay');
 const Order = require('../models/order')
 const userController = require('./user')
-
+const { generateAccessToken } = require('./user'); // Import the function
 
 const purchasepremium =async (req, res) => {
     try {
@@ -33,11 +33,16 @@ const purchasepremium =async (req, res) => {
         const userId = req.user.id;
         const { payment_id, order_id} = req.body;
         const order  = await Order.findOne({where : {orderid : order_id}}) //2
+        if (!order) {
+            console.error("Order not found for order_id:", order_id);
+            return res.status(404).json({ error: "Order not found" });
+        }
+
         const promise1 =  order.update({ paymentid: payment_id, status: 'SUCCESSFUL'}) 
         const promise2 =  req.user.update({ ispremiumuser: true }) 
 
         Promise.all([promise1, promise2]).then(()=> {
-            return res.status(202).json({sucess: true, message: "Transaction Successful", token: userController.generateAccessToken(userId,undefined , true) });
+            return res.status(202).json({sucess: true, message: "Transaction Successful", token: generateAccessToken(userId,undefined , true) });
         }).catch((error ) => {
             throw new Error(error)
         })
