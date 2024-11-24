@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express =require("express")
 const app=express()
 const bodyparser=require("body-parser")
@@ -7,17 +8,23 @@ const bcrypt=require("bcrypt")
 const sequelize=require("./utils/database")
 const userRoutes=require("./routes/user")
 const expenceroutes=require("./routes/expence")
+const purchaseroutes=require("./routes/purchase")
 const User=require("./models/user")
 const Expences = require("./models/expence")
+const Order=require("./models/order")
 
 app.use(cors());
 app.use(bodyparser.urlencoded({extended:false}))
 app.use(bodyparser.json())
 app.use("/users",userRoutes)
 app.use("/expence",expenceroutes)
+app.use("/purchase",purchaseroutes)
 
 User.hasMany(Expences)
 Expences.belongsTo(User)
+
+User.hasMany(Order)
+Order.belongsTo(User)
 
 sequelize.sync()
 .then((result)=>{
