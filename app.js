@@ -9,6 +9,8 @@ const sequelize=require("./utils/database")
 const userRoutes=require("./routes/user")
 const expenceroutes=require("./routes/expence")
 const purchaseroutes=require("./routes/purchase")
+const premiumFeatureRoutes = require('./routes/premiumFeature')
+
 const User=require("./models/user")
 const Expences = require("./models/expence")
 const Order=require("./models/order")
@@ -16,9 +18,11 @@ const Order=require("./models/order")
 app.use(cors());
 app.use(bodyparser.urlencoded({extended:false}))
 app.use(bodyparser.json())
+
 app.use("/users",userRoutes)
 app.use("/expence",expenceroutes)
 app.use("/purchase",purchaseroutes)
+app.use('/premium', premiumFeatureRoutes)
 
 User.hasMany(Expences)
 Expences.belongsTo(User)
