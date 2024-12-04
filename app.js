@@ -27,8 +27,8 @@ app.use("/purchase",purchaseroutes)
 app.use('/premium', premiumFeatureRoutes)
 app.use('/password',resetPasswordRoutes)
 
-User.hasMany(Expences)
-Expences.belongsTo(User)
+User.hasMany(Expences, { as: "Expences" }); // Add alias as "Expences"
+Expences.belongsTo(User);
 
 User.hasMany(Order)
 Order.belongsTo(User)

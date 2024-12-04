@@ -2,6 +2,62 @@ const Expences=require("../models/expence")
 const jwt=require("jsonwebtoken")
 const User = require('../models/user'); // Adjust the path as necessary
 const sequelize=require("../utils/database")
+const AWS=require("aws-sdk")
+
+function uploadToS3(data,filename){
+    const BUCKET_NAME='1expensetrackerapp'
+    const IAM_USER_KEY=process.env.AWS_KEY
+    const IAM_USER_SECRET=process.env.AWS_SECRET
+
+    let s3bucket = new AWS.S3({
+        accessKeyId : IAM_USER_KEY,
+        secretAccessKey : IAM_USER_SECRET
+    }) 
+        var params = {
+            Bucket : BUCKET_NAME,
+            Key : filename,
+            Body : data,
+            ACL : 'public-read'
+        }
+
+        return new Promise((resolve,reject)=>{
+            s3bucket.upload(params , (err,s3response) => {
+                if(err){
+                    console.log("Something went wrong", err)
+                    reject(err)
+                }else{
+                    //console.log('success' , s3response)
+                    resolve(s3response.Location)
+                }
+    
+            })
+        })
+        
+}
+
+
+exports.downloadExpenses = async (req, res) => {
+    try {
+        // `getExpences()` Sequelize association method ko call karega
+        const expenses = await req.user.getExpences();
+        console.log(expenses)
+        const stringifiedExpenses=JSON.stringify(expenses)
+
+        //it should depend upon the userId
+
+        const userId=req.user.id
+        const filename=`Expense${userId}/${new Date()}.txt`
+        const fileURL=await uploadToS3(stringifiedExpenses,filename)
+        res.status(200).json({fileURL,success:true})
+
+        
+    } catch (err) {
+        console.error("Error fetching expenses:", err.message);
+        res.status(500).json({ success: false, message: "Internal server error", error: err.message });
+    }
+};
+
+
 exports.post = async (req, res, next) => {
     const t = await sequelize.transaction(); // Begin transaction
     try {
