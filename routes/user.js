@@ -8,7 +8,7 @@ const Controllers=require("../controllers/user")
 
 router.post("/signup",Controllers.signup)
 router.post("/login",Controllers.login)
-router.get('/download', authenticatemiddleware.authenticate, expenseController.downloadExpenses)
+
 
 
 module.exports=router

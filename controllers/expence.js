@@ -111,17 +111,46 @@ exports.post = async (req, res, next) => {
 // };
 
 
-exports.get=async (req,res,next)=>{
-    try{
-        //const { expence,description,categories} = req.body;
-        const users = await Expences.findAll({where:{userId:req.user.id}})
-        res.status(200).json(users);
+// exports.get=async (req,res,next)=>{
+//     try{
+//         //const { expence,description,categories} = req.body;
+//         const users = await Expences.findAll({where:{userId:req.user.id}})
+//         res.status(200).json(users);
 
-    }catch(err)
-    {
-        return res.status(500).json({ message: "Internal server error" });
+//     }catch(err)
+//     {
+//         return res.status(500).json({ message: "Internal server error" });
+//     }
+// }
+exports.get = async (req, res, next) => {
+    try {
+        // Pagination-related lines
+        const page = parseInt(req.query.page) || 1; // Current page number
+        const pageSize = parseInt(req.query.pageSize) || 3; // Number of expenses per page
+
+        const offset = (page - 1) * pageSize; // Calculate offset
+        const limit = pageSize; // Limit results
+
+        // Fetch expenses with pagination
+        const { count, rows } = await Expences.findAndCountAll({
+            where: { userId: req.user.id },
+            offset: offset, // Pagination-related line
+            limit: limit,   // Pagination-related line
+        });
+
+        const totalPages = Math.ceil(count / pageSize);
+
+        res.status(200).json({
+            expenses: rows,
+            currentPage: page,
+            totalPages: totalPages,
+            totalExpenses: count,
+        });
+    } catch (err) {
+        return res.status(500).json({ message: "Internal server error", error: err.message });
     }
-}
+};
+
 
 exports.delete=async (req,res,next)=>{
     try{
