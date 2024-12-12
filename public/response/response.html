@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expence tracker Frontend</title>
+</head>
+<body>
+    <form id="form">
+        <label for="expenceid">Expence:</label>
+        <input type="number" name="expence" id="expenceid" required>
+
+        <label for="descriptionid">Description:</label>
+        <input type="text" name="description" id="descriptionid" required>
+
+        <label for="categoryid">Categories:</label>
+        <select name="cat" id="categoryid">
+            <option value="food">Food</option>
+            <option value="petrol">Petrol</option>
+            <option value="salary">Salary</option>
+        </select>
+        <button >Submit</button>
+    </form>
+    <div id="message"></div>
+    <button id="rzp-button1">Buy Premium</button>
+    <button onclick="download()" id="downloadexpense">Download File</button>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <div><h1>Expences</h1></div>
+
+    <div id="leaderboard"></div>
+    <ul id="listofitem"></ul>
+
+    <div id="pagination-controls">
+        <button id="prev-page" disabled>Previous</button>
+        <span id="current-page">Page: 1</span>
+        <button id="next-page">Next</button>
+    </div>
+    
+    <label for="pageSize">Items per page:</label>
+    <select id="pageSize">
+        <option value="2">2</option>
+        <option value="4" selected>4</option>
+        <option value="5">20</option>
+    </select>
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
+    <script src="./response.js"></script>
+</body>
+</html>

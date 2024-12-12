@@ -4,6 +4,7 @@ const app=express()
 const bodyparser=require("body-parser")
 const cors=require("cors")
 const bcrypt=require("bcrypt")
+const path=require("path")
 
 const sequelize=require("./utils/database")
 const userRoutes=require("./routes/user")
@@ -26,6 +27,11 @@ app.use("/expence",expenceroutes)
 app.use("/purchase",purchaseroutes)
 app.use('/premium', premiumFeatureRoutes)
 app.use('/password',resetPasswordRoutes)
+
+app.use((req,res)=>{
+    console.log('urlll',req.url)
+    res.sendFile(path.join(__dirname,`public/${req.url}`))
+})
 
 User.hasMany(Expences, { as: "Expences" }); // Add alias as "Expences"
 Expences.belongsTo(User);

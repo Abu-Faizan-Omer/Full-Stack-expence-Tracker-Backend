@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForgotPassword</title>
+</head>
+<body>
+    <div class="container forgot-container">
+        <h2 class="form-heading">Forgot Password</h2>
+        <form id="forgot-password-form">
+          <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter your email">
+          </div>
+          <div id="error-msg" class="mb-3" style="display: none;color: rgb(255, 255, 255);"></div>
+    
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-custom" id="forgot-btn">
+              Send Verification Link
+            </button>
+          </div><br>
+          <div class="login-link">
+            Know your password? <a href="../login/login.html">Login here</a>
+          </div>
+        </form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
+    <script src="./forgot.js"></script>
+    
+</body>
+</html>
