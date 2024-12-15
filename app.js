@@ -52,3 +52,4 @@ sequelize.sync()
     console.log(`Error syncing database:`, err)
 })
 
+console.log("perfect")
