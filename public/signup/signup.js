@@ -12,7 +12,7 @@ form.addEventListener("submit",async(event)=>{
         password:password
     }
 
-    const response=await axios.post(`http://65.0.178.153:3000/users/signup`,signupDetails)
+    const response=await axios.post(`http://52.66.101.82:3000/users/signup`,signupDetails)
     if(response.status===201){
         window.location.href= "../login/login.html"
     }else{

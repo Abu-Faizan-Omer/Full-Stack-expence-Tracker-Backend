@@ -23,7 +23,7 @@ form.addEventListener("submit", async function(event) {
         };
 
         const token=localStorage.getItem('token')
-        const response = await axios.post("http://65.0.178.153:3000/expence/post", expences, {
+        const response = await axios.post("http://52.66.101.82:3000/expence/post", expences, {
             headers: { 'Authorization': token }
         });
 
@@ -47,7 +47,7 @@ function showUserOnScreen(expenses) {
     deletebtn.addEventListener("click", async function() {
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`http://65.0.178.153:3000/expence/delete/${expenses.id}`,{headers: { 'Authorization': token }});
+            await axios.delete(`http://52.66.101.82:3000/expence/delete/${expenses.id}`,{headers: { 'Authorization': token }});
             li.remove();
         } catch (err) {
             console.error("Error in deleting:", err);
@@ -86,7 +86,7 @@ window.addEventListener("DOMContentLoaded", async function () {
                 showLeaderBoard()
             }
 
-            const response = await axios.get("http://65.0.178.153:3000/expence/get", {
+            const response = await axios.get("http://52.66.101.82:3000/expence/get", {
                 headers: { 'Authorization':token }
             });
             const expenses = response.data;
@@ -112,7 +112,7 @@ window.addEventListener("DOMContentLoaded", async function () {
 document.getElementById("rzp-button1").onclick=async function(e)
 {
     const token=localStorage.getItem('token')
-    const response=await axios.get("http://65.0.178.153:3000/purchase/premiummembership",{
+    const response=await axios.get("http://52.66.101.82:3000/purchase/premiummembership",{
         headers: { 'Authorization':token }
     })
     console.log(response)
@@ -121,7 +121,7 @@ document.getElementById("rzp-button1").onclick=async function(e)
         "key":response.data.key_id,
         "order_id":response.data.order.id,
         "handler":async function(response){
-            await axios.post("http://65.0.178.153:3000/purchase/updateTransactionStatus",{
+            await axios.post("http://52.66.101.82:3000/purchase/updateTransactionStatus",{
                 order_id:options.order_id,
                 payment_id:response.razorpay_payment_id,
             },{headers: { 'Authorization':token } })
@@ -152,7 +152,7 @@ function showLeaderBoard(){
     inputElement.value="Show Leaderboard"
     inputElement.onclick=async() =>{
         const token=localStorage.getItem("token")
-        const userLeaderBoardArray=await axios.get("http://65.0.178.153:3000/premium/showLeaderBoard",{headers: { 'Authorization':token } })
+        const userLeaderBoardArray=await axios.get("http://52.66.101.82:3000/premium/showLeaderBoard",{headers: { 'Authorization':token } })
         console.log(userLeaderBoardArray)
 
         let leaderboardElem=document.getElementById("leaderboard")
@@ -165,7 +165,7 @@ function showLeaderBoard(){
 }
 
 function download(){
-    axios.get('http://65.0.178.153:3000/expence/download', { headers: {"Authorization" : token} })
+    axios.get('http://52.66.101.82:3000/expence/download', { headers: {"Authorization" : token} })
     .then((response) => {
         if(response.status === 200){
             //the bcakend is essentially sending a download link
@@ -194,7 +194,7 @@ async function fetchExpenses() {
         const token = localStorage.getItem("token");
 
         const response = await axios.get(
-            `http://65.0.178.153:3000/expence/get?page=${currentPage}&pageSize=${pageSize}`,
+            `http://52.66.101.82:3000/expence/get?page=${currentPage}&pageSize=${pageSize}`,
             { headers: { 'Authorization': token } }
         );
 

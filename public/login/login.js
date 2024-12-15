@@ -5,7 +5,7 @@ async function login(event) {
             email: event.target.email.value,
             password: event.target.password.value
         };
-        const response = await axios.post(`http://65.0.178.153:3000/users/login`, loginDetails);
+        const response = await axios.post(`http://52.66.101.82:3000/users/login`, loginDetails);
         
         if (response.status === 200) {
             alert(response.data.message);
