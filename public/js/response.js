@@ -23,7 +23,7 @@ form.addEventListener("submit", async function(event) {
         };
 
         const token=localStorage.getItem('token')
-        const response = await axios.post("http://52.66.101.82:3000/expence/post", expences, {
+        const response = await axios.post("http://localhost:3000/expence/post", expences, {
             headers: { 'Authorization': token }
         });
 
@@ -47,7 +47,7 @@ function showUserOnScreen(expenses) {
     deletebtn.addEventListener("click", async function() {
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`http://52.66.101.82:3000/expence/delete/${expenses.id}`,{headers: { 'Authorization': token }});
+            await axios.delete(`http://localhost:3000/expence/delete/${expenses._id}`,{headers: { 'Authorization': token }});
             li.remove();
         } catch (err) {
             console.error("Error in deleting:", err);
@@ -62,7 +62,7 @@ function showPremiumUserMessage(){
         document.getElementById("rzp-button1").style.visibility="hidden"
          document.getElementById("message").innerHTML=`You are a Premium User`
 }
-//this is downloaded how to decode jwt token frontend
+//this is downloaded how to decode jwt token frontend for to check it is premium user or not
 function parseJwt (token) {
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -78,19 +78,21 @@ window.addEventListener("DOMContentLoaded", async function () {
     try {
         if (token) {
             //const token=localStorage.getItem('token')
-            const decodeToken=parseJwt(token)
-            console.log(decodeToken)
+            const decodeToken=parseJwt(token) //decoded token to knowits Premium useror Not
+            console.log("decoded token--",decodeToken)
             const ispremiumuser=decodeToken.ispremiumuser
             if(ispremiumuser){
                 showPremiumUserMessage()
                 showLeaderBoard()
             }
 
-            const response = await axios.get("http://52.66.101.82:3000/expence/get", {
+            const response = await axios.get("http://localhost:3000/expence/get", {
                 headers: { 'Authorization':token }
             });
             const expenses = response.data;
+            console.log("expenses",expenses)
             const totalExpense = response.data.totalExpense;
+            console.log("totalExpense",totalExpense)
 
             expenses.forEach(expense => {
 
@@ -108,31 +110,35 @@ window.addEventListener("DOMContentLoaded", async function () {
     }
 });
 
-//
+//RazorPay
 document.getElementById("rzp-button1").onclick=async function(e)
 {
     const token=localStorage.getItem('token')
-    const response=await axios.get("http://52.66.101.82:3000/purchase/premiummembership",{
+    const response=await axios.get("http://localhost:3000/purchase/premiummembership",{
         headers: { 'Authorization':token }
     })
-    console.log(response)
+    console.log('Response>>>after purchasepremiummembership>>> ',response)
     let options=
     {
-        "key":response.data.key_id,
+        "key":response.data.key_id, 
         "order_id":response.data.order.id,
         "handler":async function(response){
-            await axios.post("http://52.66.101.82:3000/purchase/updateTransactionStatus",{
+            console.log("before update transanction token ",token)
+            await axios.post("http://localhost:3000/purchase/updateTransactionStatus",{
                 order_id:options.order_id,
                 payment_id:response.razorpay_payment_id,
             },{headers: { 'Authorization':token } })
 
             alert('You are a Premium User Now')
 
-            //remove button
+            //remove buy premium button when it is premium member
             document.getElementById("rzp-button1").style.visibility="hidden"
             document.getElementById("message").innerHTML=`You are a Premium User`
-
+//update now it is premium member
+            
+            console.log("response.data.token",response)
             localStorage.setItem('token',response.data.token)
+            console.log("after update transanction token ",token)
             showLeaderBoard()
         }
     }
@@ -152,20 +158,20 @@ function showLeaderBoard(){
     inputElement.value="Show Leaderboard"
     inputElement.onclick=async() =>{
         const token=localStorage.getItem("token")
-        const userLeaderBoardArray=await axios.get("http://52.66.101.82:3000/premium/showLeaderBoard",{headers: { 'Authorization':token } })
-        console.log(userLeaderBoardArray)
+        const userLeaderBoardArray=await axios.get("http://localhost:3000/premium/showLeaderBoard",{headers: { 'Authorization':token } })
+        console.log("userLeaderBoardArray ",userLeaderBoardArray)
 
         let leaderboardElem=document.getElementById("leaderboard")
         leaderboardElem.innerHTML +="<h1> Show Leaderboard </h1>"
         userLeaderBoardArray.data.forEach((userdetails) =>{
-            leaderboardElem.innerHTML +=`<li> Name - ${userdetails.name} Total Expence - ${userdetails.totalExpenses  ||0 }</li>`
+            leaderboardElem.innerHTML +=`<li> Name - ${userdetails.name} Total Expence - ${userdetails.totalExpenses  || 0 }</li>`
         })
     }
     document.getElementById('message').appendChild(inputElement)
 }
 
 function download(){
-    axios.get('http://52.66.101.82:3000/expence/download', { headers: {"Authorization" : token} })
+    axios.get('http://localhost:3000/expence/download', { headers: {"Authorization" : token} })
     .then((response) => {
         if(response.status === 200){
             //the bcakend is essentially sending a download link
@@ -194,7 +200,7 @@ async function fetchExpenses() {
         const token = localStorage.getItem("token");
 
         const response = await axios.get(
-            `http://52.66.101.82:3000/expence/get?page=${currentPage}&pageSize=${pageSize}`,
+            `http://localhost:3000/expence/get?page=${currentPage}&pageSize=${pageSize}`,
             { headers: { 'Authorization': token } }
         );
 

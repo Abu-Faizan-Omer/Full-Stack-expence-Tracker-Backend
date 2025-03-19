@@ -8,11 +8,11 @@ const authenticate=(req,res,next)=>{
         if (!token) {
             throw new Error("Token missing");
           }
-        const user=jwt.verify(token,'secretkey')
+        const user=jwt.verify(token,'secretkey') // decrypting anf find user
         console.log("userId>>>>",user.userId)
-        User.findByPk(user.userId).then(user =>{
+        User.findById(user.userId).then(user =>{
 
-            req.user=user
+            req.user=user //req is global so i m telling to next function i have that user
             next()
         })
     }catch(err){

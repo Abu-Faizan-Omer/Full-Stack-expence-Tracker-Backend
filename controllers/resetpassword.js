@@ -1,7 +1,8 @@
 const Sib = require("sib-api-v3-sdk");
 const { v4: uuidv4 } = require("uuid");
 const User= require("../models/user"); // Update based on your Sequelize models
-const forgotpasswordm=require("../models/forgotpasswordm")
+const forgotpassword=require("../models/forgotpasswordm")
+const bcrypt = require('bcrypt');
 
 exports.forgotpassword = async (req, res, next) => {
     const { email } = req.body;
@@ -13,20 +14,22 @@ exports.forgotpassword = async (req, res, next) => {
 
     try {
         // Find user by email
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findOne ({ email } );
         if (!user) {
             return res.status(404).json({ message: "User not found. Please sign up as a new user." });
         }
 
         // Generate unique request ID
+        const userId = user._id; 
         const requestId = uuidv4();
 
-        // Save request in ForgotPassword table
-        await forgotpasswordm.create({
+        //Save request in ForgotPassword table
+        await forgotpassword.create({
             id: requestId,
-            userId: user.id,
+            userId: userId,
             isActive: true,
         });
+        //const forgotpassword= new forgotpasswordm
 
         // Initialize SendInBlue API client
         const client = Sib.ApiClient.instance;
@@ -54,7 +57,7 @@ exports.forgotpassword = async (req, res, next) => {
             htmlContent: `
                 <p>Hi ${user.name},</p>
                 <p>We received a request to reset your password. Please use the link below to reset it:</p>
-                <p><a href="http://your-frontend-url.com/reset-password/${requestId}">Reset Password</a></p>
+                <p><a href="http://localhost:3000/password/resetpassword/${requestId}">Reset Password</a></p>
                 <p>If you did not request this, please ignore this email.</p>
                 <p>Thanks,<br/>The Expense Tracker Team</p>
             `,
@@ -71,12 +74,8 @@ exports.forgotpassword = async (req, res, next) => {
 
 exports.checkresetpassword =async (req,res,next)=>{
     const uid=req.params.uuid;
-    
-     const uuid= await forgotpasswordm.findByPk(uid,{
-         attributes:[
-             'id','isActive'
-         ]
-     });
+    try{
+     const uuid= await forgotpassword.findOne({id:uid,isActive: true });
      
      // Check if the UUID exists and is active
      if (!uuid || !uuid.isActive) {
@@ -95,7 +94,7 @@ exports.checkresetpassword =async (req,res,next)=>{
  <body>
      <div class="container">
          <h2>Reset Password</h2>
-         <form action="/password/resetpassword/${uid}" method="POST">
+         <form action="http://localhost:3000/password/resetpassword/${uid}" method="POST">
              <input type="password" name="newPassword" placeholder="New Password" required />
              <button type="submit">Reset Password</button>
          </form>
@@ -104,10 +103,14 @@ exports.checkresetpassword =async (req,res,next)=>{
  </html>
  
      `);
+     } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Error occurred", error: error.message });
+    }  
  }
 
  exports.finalresetpassword= async (req,res,next)=>{
-    const t = await sequalize.transaction();
+    //const t = await sequalize.transaction();
     const { uuid } = req.params; 
     const { newPassword } = req.body; 
 
@@ -121,7 +124,7 @@ exports.checkresetpassword =async (req,res,next)=>{
 
     try {
        
-        const resetRequest = await forgotpasswordm.findOne({ where: { id: uuid, isActive: true } },{transaction: t });
+        const resetRequest = await forgotpassword.findOne({ id: uuid, isActive: true });
 
         if (!resetRequest) {
             return res.status(400).json({ message: "Invalid or expired reset link" });
@@ -133,20 +136,18 @@ exports.checkresetpassword =async (req,res,next)=>{
          const hashedPassword = await bcrypt.hash(newPassword, saltRounds);  // Hash the password
  
          // Update the user's password in the Users table
-         await User.update(
+         await User.updateOne(
              { password: hashedPassword },
-             { where: { id: resetRequest.userId } },{transaction: t}
-         );
+             { id: resetRequest.userId });
        
-        await forgotpasswordm.update(
+        await forgotpassword.updateOne(
             { isActive: false },
-            { where: { id: uuid } },{transaction:t}
-        );
+             { id: uuid });
 
-        await t.commit();
+        //await t.commit();
         res.status(200).json({ message: "Password reset successfully" });
     } catch (error) {
-        await t.rollback();
+       // await t.rollback();
         console.error(error);
         res.status(500).json({ message: "Error occurred while resetting password", error: error.message });
     }

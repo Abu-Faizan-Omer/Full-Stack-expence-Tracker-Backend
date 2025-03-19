@@ -2,7 +2,7 @@ const form=document.getElementById("form")
 form.addEventListener("submit",async(event)=>{
     try{
     event.preventDefault()
-    const name=event.target.username.value
+    const name=event.target.username.value 
     const email=event.target.email.value
     const password=event.target.password.value
 
@@ -12,9 +12,9 @@ form.addEventListener("submit",async(event)=>{
         password:password
     }
 
-    const response=await axios.post(`http://52.66.101.82:3000/users/signup`,signupDetails)
+    const response=await axios.post(`http://localhost:3000/users/signup`,signupDetails)
     if(response.status===201){
-        window.location.href= "../login/login.html"
+        window.location.href= "./login"
     }else{
         throw new Error("failed to login")
     }

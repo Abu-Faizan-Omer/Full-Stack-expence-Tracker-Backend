@@ -5,12 +5,12 @@ async function login(event) {
             email: event.target.email.value,
             password: event.target.password.value
         };
-        const response = await axios.post(`http://52.66.101.82:3000/users/login`, loginDetails);
+        const response = await axios.post(`http://localhost:3000/users/login`, loginDetails);
         
         if (response.status === 200) {
             alert(response.data.message);
             localStorage.setItem('token',response.data.token)
-             window.location.href= "../response/response.html"
+             window.location.href= "./response"
         }
     } catch (err) {
         console.log(err);
@@ -19,5 +19,5 @@ async function login(event) {
 }
 
 function forgotpassword() {
-    window.location.href = "../ForgotPassword/forgot.html"
+    window.location.href = "./forgot"
 }

@@ -3,30 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Expence tracker</title>
+    <title>Login Page</title>
 </head>
-<style>
-    body{
-        background-color: rgb(235, 219, 200);
-    }
-</style>
+<link rel="stylesheet" href="/css/login.css">
 <body>
-    <form id="form">
-        <label for="usernameid">Username:</label>
-        <input type="text" name="username" id="usernameid" required>
-
+    <form onsubmit="login(event)">
         <label for="emailid">Email:</label>
         <input type="text" name="email" id="emailid" required>
-        
+
         <label for="passwordid">Password:</label>
         <input type="password" name="password" id="passwordid" required>
 
-        <button id="signup">Signup</button>
-    </form>
-    
-    <a href="../login/login.html">Login </a>
+        <button type="submit">Login</button>
 
+    </form><br>
+    <button onclick="forgotpassword()"> Forgot password</button><br><br>
+
+    <a href="../response/response.html">Add Expence</a>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
-    <script src="signup.js"></script>
+    <script src="/js/login.js"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@ const User=require("../models/user")
 const bcrypt=require("bcrypt")
 const jwt=require("jsonwebtoken")
 //to check every input is filled or not
-function isStringValid(string){
+function isStringInValid(string){
     if(string==undefined || string.length===0)
     {
         return true
@@ -15,10 +15,11 @@ exports.signup=async(req,res,next)=>{
     try{
         const {name,email,password}=req.body
 
-        if(isStringValid(name) || isStringValid(email) ||isStringValid(password))
+        if(isStringInValid(name) || isStringInValid(email) ||isStringInValid(password))
         {
             return res.status(500).json({err:"Something is missing"})
         }
+        //use bcrypt to make password secure
         const saltround=10
         bcrypt.hash(password,saltround,async(err,hash)=>{
 
@@ -29,7 +30,7 @@ exports.signup=async(req,res,next)=>{
         return res.status(500).json(err)
     }   
 }
-
+//generate token for sending userId in a encrypted
  function generateAccessToken(id,name,ispremiumuser){
     return jwt.sign({userId:id,name:name,ispremiumuser},'secretkey')
  }
@@ -40,12 +41,12 @@ exports.login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
-        if (isStringValid(email) || isStringValid(password)) {
+        if (isStringInValid(email) || isStringInValid(password)) {
             return res.status(400).json({ message: "Email or password is missing" });
         }
 
         // Check if the user exists in the database
-        const user = await User.findAll({ where: { email } });
+        const user = await User.find({email } );
 
         if (user.length > 0) {
             bcrypt.compare(password,user[0].password,(err,result)=>{
