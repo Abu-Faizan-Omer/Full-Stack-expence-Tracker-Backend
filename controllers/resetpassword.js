@@ -90,6 +90,11 @@ exports.checkresetpassword =async (req,res,next)=>{
      <meta charset="UTF-8">
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <title>Reset Password</title>
+     <style>
+      body{
+      background-color: rgb(239, 204, 192);
+     }
+    </style>
  </head>
  <body>
      <div class="container">
