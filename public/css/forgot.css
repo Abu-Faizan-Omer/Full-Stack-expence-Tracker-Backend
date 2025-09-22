@@ -1,3 +1,49 @@
 body {
-    background-color: rgb(239, 204, 192);
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.forgot-container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(8px);
+    text-align: center;
+    color: white;
+    width: 300px;
+}
+
+input, .btn-custom {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+.btn-custom {
+    background-color: #f39c12;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-custom:hover {
+    background-color: #e67e22;
+}
+
+.login-link {
+    margin-top: 15px;
+    font-size: 0.9rem;
+}
+
+.login-link a {
+    color: #fff;
+    text-decoration: underline;
 }

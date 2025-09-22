@@ -50,24 +50,8 @@ app.get("/:page", (req, res) => {
     });
 });
 
-// User.hasMany(Expences, { as: "Expences" }); // Add alias as "Expences"
-// Expences.belongsTo(User);
-
-// User.hasMany(Order)
-// Order.belongsTo(User)
-
-// User.hasMany(Forgotpassword);
-// Forgotpassword.belongsTo(User);
-
-// sequelize.sync()
-// .then((result)=>{
-//     app.listen(3000,()=>{
-//         console.log(`Server is runnig on Port 3000`)
-//     })
-// })
-// .catch((err)=>{
-//     console.log(`Error syncing database:`, err)
-// })
+// console.log("hi")
+// console.log(process.env.SIB_API_KEY);
 
 mongoose.connect(process.env.MONGODB_CONNECTION_URL)
 .then(result => {
@@ -77,4 +61,5 @@ mongoose.connect(process.env.MONGODB_CONNECTION_URL)
 .catch(err =>{
     console.log("Error in Connection Mongodb")
 })
+
 

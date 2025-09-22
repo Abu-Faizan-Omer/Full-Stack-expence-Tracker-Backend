@@ -1,6 +1,6 @@
 const Sib = require("sib-api-v3-sdk");
 const { v4: uuidv4 } = require("uuid");
-const User= require("../models/user"); // Update based on your Sequelize models
+const User= require("../models/user"); 
 const forgotpassword=require("../models/forgotpasswordm")
 const bcrypt = require('bcrypt');
 
@@ -29,12 +29,11 @@ exports.forgotpassword = async (req, res, next) => {
             userId: userId,
             isActive: true,
         });
-        //const forgotpassword= new forgotpasswordm
 
         // Initialize SendInBlue API client
         const client = Sib.ApiClient.instance;
         const apiKey = client.authentications["api-key"];
-        apiKey.apiKey = process.env.SIB_API_KEY; // Ensure your `.env` file contains SIB_API_KEY
+        apiKey.apiKey = process.env.SIB_API_KEY; 
 
         const transEmailApi = new Sib.TransactionalEmailsApi();
 
@@ -142,12 +141,12 @@ exports.checkresetpassword =async (req,res,next)=>{
  
          // Update the user's password in the Users table
          await User.updateOne(
-             { password: hashedPassword },
-             { id: resetRequest.userId });
+             { _id: resetRequest.userId },
+            { password: hashedPassword });
        
         await forgotpassword.updateOne(
-            { isActive: false },
-             { id: uuid });
+             { id: uuid },
+            { isActive: false });
 
         //await t.commit();
         res.status(200).json({ message: "Password reset successfully" });

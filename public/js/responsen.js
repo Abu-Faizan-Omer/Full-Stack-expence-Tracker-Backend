@@ -1,21 +1,4 @@
-console.log("old response")
-window.addEventListener("DOMContentLoaded", async function () {
-    // Check if user is logged in
-    if (!localStorage.getItem('token')) {
-        window.location.href = './login';
-        return;
-    }
-});
-
-// Ensure token is globally available
-const token = localStorage.getItem('token');
-//console.log("Token from localStorage:", token); // Debug line to ensure token is present
-
-// Check if token is found before proceeding
-if (!token) {
-    console.error("No token found in localStorage. Authorization will fail.");
-}
-
+console.log("New RESPOnse")
 // Form submission handler
 form.addEventListener("submit", async function(event) {
     try {
@@ -37,6 +20,7 @@ form.addEventListener("submit", async function(event) {
         });
 
         if (response.status === 200) {
+            console.log("response-",response)
             alert(response.data.message);
             //showUserOnScreen(expences);
             showUserOnScreen(response.data.expense)
@@ -67,10 +51,7 @@ function showUserOnScreen(expenses) {
     ul.appendChild(li);
 }
 
-function showPremiumUserMessage(){
-        document.getElementById("rzp-button1").style.visibility="hidden"
-         document.getElementById("message").innerHTML=`You are a Premium User`
-}
+
 //this is downloaded how to decode jwt token frontend for to check it is premium user or not
 function parseJwt (token) {
     var base64Url = token.split('.')[1];
@@ -82,37 +63,11 @@ function parseJwt (token) {
     return JSON.parse(jsonPayload);
 }
 
-// Display expenses on page load
-window.addEventListener("DOMContentLoaded", async function () {
-    try {
-        if (token) {
-            //const token=localStorage.getItem('token')
-            const decodeToken=parseJwt(token) //decoded token to knowits Premium useror Not
-            console.log("decoded token--",decodeToken)
-            const ispremiumuser=decodeToken.ispremiumuser
-            if(ispremiumuser){
-                showPremiumUserMessage()
-                showLeaderBoard()
-            }
 
-            const response = await axios.get("http://localhost:3000/expence/get", {
-                headers: { 'Authorization':token }
-            });
-            const expenses = response.data;
-            console.log("expenses",expenses)
-            const totalExpense = response.data.totalExpense;
-            console.log("totalExpense",totalExpense)
-
-            expenses.forEach(expense => {
-                showUserOnScreen(expense);
-            });
-        } else {
-            console.log("Token not found in localStorage");
-        }
-    } catch (err) {
-        console.error("Error loading expenses:", err);
-    }
-});
+function showPremiumUserMessage(){
+        document.getElementById("rzp-button1").style.visibility="hidden"
+         document.getElementById("message").innerHTML=`You are a Premium User`
+}
 
 //RazorPay
 document.getElementById("rzp-button1").onclick=async function(e)
@@ -122,6 +77,7 @@ document.getElementById("rzp-button1").onclick=async function(e)
         headers: { 'Authorization':token }
     })
     console.log('Response>>>after purchasepremiummembership>>> ',response)
+
     let options=
     {
         "key":response.data.key_id, 
@@ -129,6 +85,7 @@ document.getElementById("rzp-button1").onclick=async function(e)
         "handler":async function(response){
             console.log("before update transanction token ",token)
             try{
+                //after payment
             const updateResponse=await axios.post("http://localhost:3000/purchase/updateTransactionStatus",{
                 order_id:options.order_id,
                 payment_id:response.razorpay_payment_id,
@@ -174,12 +131,14 @@ function showLeaderBoard(){
 
         let leaderboardElem=document.getElementById("leaderboard")
         leaderboardElem.innerHTML +="<h1> Show Leaderboard </h1>"
+        console.log("userleaderBoardArray-- ",userLeaderBoardArray)
         userLeaderBoardArray.data.forEach((userdetails) =>{
             leaderboardElem.innerHTML +=`<li> Name - ${userdetails.name} Total Expence - ${userdetails.totalExpenses  || 0 }</li>`
         })
     }
     document.getElementById('message').appendChild(inputElement)
 }
+
 
 function download() {
     const token = localStorage.getItem('token');
@@ -203,7 +162,6 @@ function download() {
         alert('Download failed: ' + (err.response?.data?.message || err.message));
     });
 }
-
 
 // Pagination-related variables
 let currentPage = 1; // Start with page 1
@@ -236,7 +194,7 @@ async function fetchExpenses() {
     }
 }
 
-// Event listeners for pagination
+// Event listeners for pagination on page button
 document.getElementById("prev-page").addEventListener("click", function () {
     if (currentPage > 1) {
         currentPage--;
@@ -266,8 +224,25 @@ document.getElementById('logout-btn').addEventListener('click', function() {
     window.location.href = './login'; // Update with your actual login route
 });
 
-// Load expenses on page load
-window.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("pageSize").value = pageSize; // Set pageSize dropdown to saved value
+
+//   DOMContentLoaded
+window.addEventListener("DOMContentLoaded", async function () {
+    // Check if user is logged in
+    const token = localStorage.getItem('token');
+    console.log("token while domcontenloaded",token)
+    if (!token) {
+        window.location.href = './login';
+        return;
+    }
+
+    const decodeToken=parseJwt(token) //decoded token to knowits Premium useror Not
+            console.log("decoded token--",decodeToken)
+            const ispremiumuser=decodeToken.ispremiumuser
+            if(ispremiumuser){
+                showPremiumUserMessage()
+                showLeaderBoard()
+            }    
+
+    document.getElementById("pageSize").value = pageSize;
     fetchExpenses();
 });

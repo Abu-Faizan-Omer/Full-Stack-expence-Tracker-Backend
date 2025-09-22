@@ -16,14 +16,6 @@ const purchasepremium =async (req, res) => {
             if(err) {
                 return res.status(500).json({ message: 'Failed to create order', err });
             }
-            //console.log('rzp req >>>>>> ',req.user)
-            // req.user.createOrder({ orderid: order.id, status: 'PENDING'})
-            // .then(() => {
-            //     return res.status(201).json({ order, key_id : rzp.key_id});
-
-            // }).catch(err => {
-            //     throw new Error(err)
-            // })
 
             const newOrder = new Order({
                 userId: req.user._id,
@@ -50,17 +42,13 @@ const purchasepremium =async (req, res) => {
             console.error("Order not found for order_id:", order_id);
             return res.status(404).json({ success: false, message: "Order not found" });
         }
-
-        // const promise1 =  order.update({ paymentid: payment_id, status: 'SUCCESSFUL'}) 
-        // const promise2 =  req.user.update({ ispremiumuser: true })
-
         order.paymentid = payment_id;
         order.status = 'SUCCESSFUL';
 
 
         Promise.all([order.save(),
             User.findByIdAndUpdate(userId, { ispremiumuser: true })
-         ]) // Assuming your User model has an `isPremiumUser` field
+         ]) 
 
             // Generate a new JWT token
         const token = generateAccessToken(userId, undefined, true);  // Token with premium user status

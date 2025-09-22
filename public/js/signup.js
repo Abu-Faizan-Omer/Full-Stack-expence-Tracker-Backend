@@ -19,6 +19,6 @@ form.addEventListener("submit",async(event)=>{
         throw new Error("failed to login")
     }
     }catch(err){
-        document.body.innerHTML +=`<div style="color:red;">${err}</div>`
+        document.body.innerHTML +=`<div style="color:red;">${err.message}</div>`
     }    
 })

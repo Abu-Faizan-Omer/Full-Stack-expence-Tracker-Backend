@@ -19,6 +19,10 @@ exports.signup=async(req,res,next)=>{
         {
             return res.status(500).json({err:"Something is missing"})
         }
+        const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already registered" });
+    }
         //use bcrypt to make password secure
         const saltround=10
         bcrypt.hash(password,saltround,async(err,hash)=>{

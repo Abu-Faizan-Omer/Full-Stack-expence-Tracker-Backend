@@ -1,7 +1,7 @@
 const jwt=require("jsonwebtoken")
 const User=require("../models/user")
 
-const authenticate=(req,res,next)=>{
+const authenticate= (req,res,next)=>{
     try{
         const token=req.header("Authorization")
         console.log(token)
@@ -9,10 +9,13 @@ const authenticate=(req,res,next)=>{
             throw new Error("Token missing");
           }
         const user=jwt.verify(token,'secretkey') // decrypting anf find user
+        console.log("user-- ",user)
         console.log("userId>>>>",user.userId)
         User.findById(user.userId).then(user =>{
-
+           // console.log("req===== ",req)
+            
             req.user=user //req is global so i m telling to next function i have that user
+            console.log("req.user After===== ",req.user)
             next()
         })
     }catch(err){
